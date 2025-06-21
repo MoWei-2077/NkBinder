@@ -1,0 +1,33 @@
+bpf {
+    name: "nkbinder.o",
+    srcs: ["nkbinder.c"],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+}
+
+cc_binary {
+    name: "nkbinder_cli",
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wthread-safety",
+    ],
+
+    static_libs: [
+        "libbpf",
+        "libbase",
+        "libbpf_bcc",
+        "libbpf_android",
+        "libcutils",
+        "liblog",
+        "libnetdutils",
+    ],
+
+
+    srcs: [
+        "nkbinder_cli.cpp",
+    ],
+}
