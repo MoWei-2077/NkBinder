@@ -3,12 +3,10 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <sys/un.h>
-
-
  
 int main() {
     int skfd = socket(AF_LOCAL, SOCK_STREAM, 0);
-    int ret,len = 0;
+    int len = 0;
     struct sockaddr_un addr;
     char buffer[128];
     if (skfd < 0) {
@@ -29,10 +27,19 @@ int main() {
     }
 
     while (true) {
-        ret = recv(skfd, buffer, sizeof(buffer), 0);
-        if (ret > 0) {
+        recv(skfd, buffer, sizeof(buffer), 0);
+
+        #if DEBUG_DURATION
             printf("NkBinder: %s\n", buffer);
-        } 
+        #endif
+
+        auto ptr = strstr(buffer, "from_uid=");
+
+        if (ptr != nullptr) {
+            const int uid = atoi(ptr + 9);
+            printf("uid: %d\n", uid);
+        }
+
     }
  
     close(skfd);
