@@ -12,11 +12,11 @@
 #include <libbpf_android.h>
 #include "nkbinder.h"
 
-constexpr const char tp_prog_path[] = "/sys/fs/bpf/prog_nkbinder_tracepoint_binder_binder_transaction";
-constexpr const char tp_map_path[] = "/sys/fs/bpf/map_nkbinder_binder_transaction_map";
+const char tp_prog_path[] = "/sys/fs/bpf/prog_nkbinder_tracepoint_binder_binder_transaction";
+const char tp_map_path[] = "/sys/fs/bpf/map_nkbinder_binder_transaction_map";
 
-constexpr const char* SOCKET_NAME = "nkbinder";
-constexpr int MESSAGE_LENGTH = 128;
+const char* SOCKET_NAME = "nkbinder";
+const int MESSAGE_LENGTH = 128;
 
 struct sockaddr_un addr;
 
@@ -29,7 +29,7 @@ int setup_socket_server() {
     }
 
     addr.sun_path[0] = 0;
-    strcpy(addr.sun_path + 1, SOCKET_NAME);
+    memcpy(addr.sun_path  + 1, SOCKET_NAME, strlen(SOCKET_NAME) + 1);
     int nameLen = strlen(SOCKET_NAME);
     addr.sun_family = AF_LOCAL;
     int len = 1 + nameLen + offsetof(struct sockaddr_un, sun_path);
@@ -106,10 +106,10 @@ int main() {
         if (new_fd > 0) {
             if (client_fd != -1) {
                 close(client_fd);
-                std::cout << "Closing previous connection" << std::endl;
+                printf("Closing previous connection\n")
             }
             client_fd = new_fd;
-            std::cout << "New client connected" << std::endl;
+            printf("New client connected\n")
         }
 
         // 处理BPF事件
